@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Details - GJ Terminal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 2rem 3rem;
+        }
+        .details-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, 0.2); }
+        .details-header h1 { margin: 0; font-size: 1.8rem; }
+
+        /* --- This is the key styling for the card layout --- */
+        .cards-grid {
+            display: grid;
+            /* Creates 4 equal-width columns */
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem; /* The space between cards */
+        }
+        .info-card {
+            background-color: #1e1e1e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .card-category { font-size: 0.8rem; font-weight: 500; color: #aaa; }
+        .card-title { font-size: 1.25rem; font-weight: 700; color: #fff; margin: 0; }
+        .card-description { font-size: 0.95rem; color: #b0b0b0; line-height: 1.6; margin: 0; }
+
+        /* --- Style for the new, merged cutoff card --- */
+        .cutoff-card {
+            /* This tells the card to start at column line 4 and end at line 5 */
+            grid-column: 4 / 5;
+            /* This tells the card to start at row line 1 and span across 2 rows */
+            grid-row: 1 / 3;
+            display: flex; /* Helps align content inside */
+            flex-direction: column;
+        }
+        .cutoff-table {
+            width: 100%;
+            margin-top: 1rem;
+            border-collapse: collapse;
+        }
+        .cutoff-table th, .cutoff-table td {
+            padding: 12px 0;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .cutoff-table th { color: #aaa; }
+        .cutoff-table tr:last-child td { border-bottom: none; }
+    </style>
+</head>
+<body>
+    <header class="details-header">
+        <a href="{{ url_for('index') }}" class="back-btn" title="Back to Terminal">&larr;</a>
+        <h1>{{ job['exam_name'] }} Details</h1>
+    </header>
+
+    <main class="cards-grid">
+        {% for detail in details %}
+        <div class="info-card">
+            <span class="card-category">{{ detail['category'] }}</span>
+            <h3 class="card-title">{{ detail['title'] }}</h3>
+            <p class="card-description">{{ detail['description'] }}</p>
+        </div>
+        {% endfor %}
+
+        <div class="info-card cutoff-card">
+            <span class="card-category">Cutoff Scores</span>
+            <h3 class="card-title">Recent Year Cutoffs</h3>
+            <p class="card-description">Based on the {{ cutoffs[0]['year'] if cutoffs else 'latest' }} preliminary exam results.</p>
+
+            <table class="cutoff-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cutoff in cutoffs %}
+                    <tr>
+                        <td>{{ cutoff['category'] }}</td>
+                        <td>{{ cutoff['cutoff_score'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    </body>
+</html>
